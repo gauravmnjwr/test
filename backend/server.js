@@ -10,6 +10,8 @@ import bcrypt from "bcrypt";
 import path from "path";
 import mongoose from "mongoose";
 import http from "http";
+import multer from "multer";
+
 import { Server } from "socket.io";
 
 dotenv.config();
@@ -29,7 +31,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://pdfmanangement00.netlify.app",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
@@ -60,6 +62,15 @@ const pdfSchema = new mongoose.Schema(
 );
 
 const PDF = mongoose.model("PDF", pdfSchema);
+
+const storage = multer.diskStorage({
+  destination: "./uploads",
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+var upload = multer({ storage: storage }).single("file");
 
 //
 app.get("/", (req, res) => {
