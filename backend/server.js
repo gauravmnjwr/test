@@ -29,7 +29,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://pdfman.netlify.app",
+    origin: "https://pdfmanangement00.netlify.app",
     methods: ["GET", "POST"],
   },
 });
