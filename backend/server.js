@@ -34,21 +34,7 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => {
-  console.log(`User Connected: ${socket.id}`);
-
-  socket.on("join_room", (data) => {
-    socket.join(data);
-  });
-
-  socket.on("send_message", (data) => {
-    io.in(data.room).emit("receive_message", data);
-  });
-});
-
-// Set up MongoDB connection
 mongoose.connect(process.env.MONGO_URL, {
-  // dbName: "pdfManagement",
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -128,17 +114,9 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-// Signup route
 app.post(
   "/signup",
   asyncHandler(async (req, res) => {
-    // if (userId) {
-    //   res.writeHead(302, {
-    //     Location: "https://pdfmanagement.netlify.app",
-    //   });
-    //   res.end();
-    // }
-    console.log("signeddd");
     const { email, password } = req.body;
     const userExists = await User.findOne({ email });
 
@@ -149,7 +127,6 @@ app.post(
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ email, password: hashedPassword });
-    // save user id
     userId = user._id.toString();
     if (user) {
       await user.save();
@@ -163,16 +140,9 @@ app.post(
   })
 );
 
-// Login route
 app.post(
   "/login",
   asyncHandler(async (req, res) => {
-    // if (userId) {
-    //   res.writeHead(302, {
-    //     Location: "https://pdfmanagement.netlify.app",
-    //   });
-    //   res.end();
-    // }
     try {
       const { email, password } = req.body;
       // Find the user in the database
@@ -191,20 +161,12 @@ app.post(
       const token = jwt.sign({ user }, secretKey, { expiresIn: "1h" });
 
       res.status(200).json({ token });
-
-      // res.status(200).json({ message: "Login successful" });
     } catch (error) {
       console.error("Login error", error);
       res.status(500).json({ message: "Login failed" });
     }
   })
 );
-
-// app.get("/allusers",asyncHandler(async(req,res) =>{
-
-// }))
-
-// app.get('/getuser')
 
 app.get(
   "/logout",
