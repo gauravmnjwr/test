@@ -1,2 +1,2 @@
-const BASE_URL = "https://pdfmanagement-fxjw.onrender.com";
+const BASE_URL = "https://pdfmanagement.onrender.com";
 export default BASE_URL;
